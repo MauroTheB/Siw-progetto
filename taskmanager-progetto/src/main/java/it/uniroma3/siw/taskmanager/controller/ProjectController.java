@@ -98,29 +98,32 @@ public class ProjectController {
 		return "addProject";
 	} 
 	
-	@RequestMapping(value = {"/projects/{project.id}/update"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/projects/{projectId}/update"}, method = RequestMethod.GET)
 	public String createUpdateProjectForm(	Model model,
 											@PathVariable Long projectId) {
 		Project project = projectService.getProject(projectId);
 		model.addAttribute("project", project);
+		model.addAttribute("projectId", projectId);
 		model.addAttribute("projectForm", new Project());
 		return "addProject";
 	} 
 	
-	@RequestMapping(value = {"/projects/{project.id}/update"}, method = RequestMethod.POST)
-	public String createUpdateProject(@Validated @ModelAttribute("projectForm") Project projectForm,
+	@RequestMapping(value = {"/projects/{projectId}/update"}, method = RequestMethod.POST)
+	public String createUpdateProject(@PathVariable @ModelAttribute("projectId") Long projectId,
 								BindingResult projectBindingResult,
-								@ModelAttribute("project") Project project,
+								@Validated @ModelAttribute("projectForm") Project projectForm,
 								Model model) {
 		
-		projectValidator.validate(project, projectBindingResult);
+		projectValidator.validate(projectForm, projectBindingResult);
+		Project project = this.projectService.getProject(projectId);
 		if(!projectBindingResult.hasErrors()) {
 			project.setName(projectForm.getName());
 			project.setDescription(projectForm.getDescription());
 			this.projectService.saveProject(project);
-			return "redirect:/projects/" + project.getId();
+			return "redirect:/projects/" + projectId;
 		}
 		model.addAttribute("project", project);
+		model.addAttribute("projectId", projectId);
 		return "updateProject";
 	} 
 	
