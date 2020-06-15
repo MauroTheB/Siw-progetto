@@ -45,4 +45,8 @@ public class ProjectService {
 	public List<Project> retrieveProjectsOwnedBy(User loggedUser) {
 		return this.projectRepository.findByOwner(loggedUser);
 	}
+
+	public List<Project> retrieveVisibleProjectsFor(User loggedUser) {
+		return this.projectRepository.findByMembers(loggedUser);
+	}
 }

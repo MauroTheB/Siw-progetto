@@ -42,26 +42,24 @@ public class CredentialsService {
 			result.add(cred);
 		return result;
 	}
+	
+	public Credentials findByUsername(String username) {
+		return this.credentialsRepository.findByUsername(username).get();
+	}
 
-	@Transactional
 	public void deleteCredentials(String username) {
 		this.credentialsRepository.deleteCredentialsByUsername(username);
 	}
-	
-	@Transactional
-	public Credentials findByUsername(String username) {
-		return credentialsRepository.findByUsername(username).get();
-	}
-	
-	@Transactional
-	public void updateCredentials(Credentials credentials) {
-		Credentials cred = this.findByUsername(credentials.getUsername());
-		cred.setUsername(credentials.getUsername());
-		cred.setPassword(credentials.getPassword());
-		cred.setPassword(this.passwordEncoder.encode(cred.getPassword()));
-		cred.getUser().setFirstName(credentials.getUser().getFirstName());
-		cred.getUser().setLastName(credentials.getUser().getLastName());
-		this.saveCredentials(cred);
-	}
 
+	
+	@Transactional
+	public void updateCredentials(Credentials updated, String originalUsername) {
+	    Credentials original = this.findByUsername(originalUsername);
+	    original.setUsername(updated.getUsername());
+	    original.setPassword(updated.getPassword());
+	    original.setPassword(this.passwordEncoder.encode(original.getPassword()));
+	    original.getUser().setFirstName(updated.getUser().getFirstName());
+	    original.getUser().setLastName(updated.getUser().getLastName());
+	    this.saveCredentials(original);
+	}
 }

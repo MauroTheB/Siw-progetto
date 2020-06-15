@@ -43,6 +43,15 @@ public class ProjectController {
 		return "myOwnedProjects";
 	}
 	
+	@RequestMapping(value = {"/projects/sharedProjects"}, method = RequestMethod.GET)
+	public String sharedProjects(Model model) {
+		User loggedUser = sessionData.getLoggedUser();
+		List<Project> projectList = projectService.retrieveVisibleProjectsFor(loggedUser);
+		model.addAttribute("loggedUser", loggedUser);
+		model.addAttribute("projectList", projectList);
+		return "sharedProjects";
+	}
+	
 	@RequestMapping(value = {"/projects/{projectId}"}, method = RequestMethod.GET)
 	public String project(Model model,
 							@PathVariable Long projectId) {
@@ -53,10 +62,11 @@ public class ProjectController {
 		
 		List<User> members = userService.getMembers(project);
 		User loggedUser = this.sessionData.getLoggedUser();
+		
 		if(!project.getOwner().equals(loggedUser) && !members.contains(loggedUser)) {
 			return "redirect:/projects";
 		}
-		
+				
 		model.addAttribute("loggedUser", loggedUser);
 		model.addAttribute("project", project);
 		model.addAttribute("members", members);
@@ -80,10 +90,38 @@ public class ProjectController {
 		projectValidator.validate(project, projectBindingResult);
 		if(!projectBindingResult.hasErrors()) {
 			project.setOwner(loggedUser);
+			project.addMember(loggedUser); //il proprietario è lui stesso un membro del progetto
 			this.projectService.saveProject(project);
 			return "redirect:/projects/" + project.getId();
 		}
 		model.addAttribute("loggedUser", loggedUser);
 		return "addProject";
 	} 
+	
+	@RequestMapping(value = {"/projects/{project.id}/update"}, method = RequestMethod.GET)
+	public String createUpdateProjectForm(	Model model,
+											@PathVariable Long projectId) {
+		Project project = projectService.getProject(projectId);
+		model.addAttribute("project", project);
+		model.addAttribute("projectForm", new Project());
+		return "addProject";
+	} 
+	
+	@RequestMapping(value = {"/projects/{project.id}/update"}, method = RequestMethod.POST)
+	public String createUpdateProject(@Validated @ModelAttribute("projectForm") Project projectForm,
+								BindingResult projectBindingResult,
+								@ModelAttribute("project") Project project,
+								Model model) {
+		
+		projectValidator.validate(project, projectBindingResult);
+		if(!projectBindingResult.hasErrors()) {
+			project.setName(projectForm.getName());
+			project.setDescription(projectForm.getDescription());
+			this.projectService.saveProject(project);
+			return "redirect:/projects/" + project.getId();
+		}
+		model.addAttribute("project", project);
+		return "updateProject";
+	} 
+	
 }

@@ -5,8 +5,8 @@ import it.uniroma3.siw.taskmanager.controller.validation.CredentialsValidator;
 import it.uniroma3.siw.taskmanager.controller.validation.UserValidator;
 import it.uniroma3.siw.taskmanager.model.Credentials;
 import it.uniroma3.siw.taskmanager.model.User;
-import it.uniroma3.siw.taskmanager.repository.UserRepository;
 import it.uniroma3.siw.taskmanager.service.CredentialsService;
+import it.uniroma3.siw.taskmanager.service.UserService;
 
 import java.util.List;
 
@@ -28,23 +28,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     UserValidator userValidator;
-    
-    @Autowired
-    CredentialsValidator credentialsValidator;
 
-    @Autowired
-    CredentialsService credentialService;
-    
     @Autowired
     PasswordEncoder passwordEncoder;
     
     @Autowired
     CredentialsService credentialsService;
-
+    
+    @Autowired
+    CredentialsValidator credentialsValidator;
+    
     @Autowired
     SessionData sessionData;
 
@@ -92,31 +89,33 @@ public class UserController {
         return "redirect:/admin/users";
     }
     
-    @RequestMapping(value = { "/users/me/update" }, method = RequestMethod.GET)
-    public String showUpdateUserForm(Model model) {
-    	
-    	model.addAttribute("user", sessionData.getLoggedUser());
-    	model.addAttribute("userCredentials", sessionData.getLoggedCredentials());
-        return "updateUser";
+    @RequestMapping(value = {"/users/me/update"}, method = RequestMethod.GET)
+    public String updateUserForm(Model model) {
+    	 User loggedUser = sessionData.getLoggedUser();
+    	 Credentials loggedCredentials = sessionData.getLoggedCredentials();
+    	 model.addAttribute("loggedUser", loggedUser);
+    	 model.addAttribute("userForm", new User());
+    	 model.addAttribute("loggedCredentials", loggedCredentials);
+    	 model.addAttribute("credentialsForm", new Credentials());
+    	 return "updateUser";
     }
     
-    @RequestMapping(value = { "/users/me/update" }, method = RequestMethod.POST)
-	public String updateUser(	@Validated @ModelAttribute("user") User user,
+	@RequestMapping(value = {"/users/me/update"}, method = RequestMethod.POST)
+	public String updateUser(	@Validated @ModelAttribute("userForm") User user,
 								BindingResult userBindingResult,
-								@Validated @ModelAttribute("userCredentials") Credentials credentials,
+								@Validated @ModelAttribute("credentialsForm") Credentials credentials,
 								BindingResult credentialsBindingResult,
 								Model model) {
 		this.userValidator.validate(user, userBindingResult);
 		this.credentialsValidator.validate(credentials, credentialsBindingResult);
-		
+		Credentials loggedCredentials = sessionData.getLoggedCredentials();
 		if(!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
-			credentials.setUser(sessionData.getLoggedUser());
-			credentialService.updateCredentials(credentials);
-			return "updateSuccessful";
+			this.credentialsService.updateCredentials(credentials, loggedCredentials.getUsername());
+			return "changeSuccessful";
 		}
+		User loggedUser = loggedCredentials.getUser();
+		model.addAttribute("loggedUser", loggedUser);
+		model.addAttribute("loggedCredentials", loggedCredentials);
 		return "updateUser";
 	}
-    
-    
-    
 }
