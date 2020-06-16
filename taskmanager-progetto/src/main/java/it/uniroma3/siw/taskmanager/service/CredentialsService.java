@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.siw.taskmanager.model.Credentials;
+import it.uniroma3.siw.taskmanager.model.User;
 import it.uniroma3.siw.taskmanager.repository.CredentialsRepository;
 
 @Service
@@ -53,13 +54,13 @@ public class CredentialsService {
 
 	
 	@Transactional
-	public void updateCredentials(Credentials updated, String originalUsername) {
-	    Credentials original = this.findByUsername(originalUsername);
-	    original.setUsername(updated.getUsername());
-	    original.setPassword(updated.getPassword());
-	    original.setPassword(this.passwordEncoder.encode(original.getPassword()));
-	    original.getUser().setFirstName(updated.getUser().getFirstName());
-	    original.getUser().setLastName(updated.getUser().getLastName());
-	    this.saveCredentials(original);
+	public void updateCredentials(Credentials updatedCredentials, User updatedUser, String originalUsername) {
+	   Credentials original = this.findByUsername(originalUsername);
+	   original.setUsername(updatedCredentials.getUsername());
+	   original.setPassword(updatedCredentials.getPassword());
+	   original.setPassword(this.passwordEncoder.encode(original.getPassword()));
+	   original.getUser().setFirstName(updatedUser.getFirstName());
+	   original.getUser().setLastName(updatedUser.getLastName());
+	   this.saveCredentials(original);
 	}
 }
