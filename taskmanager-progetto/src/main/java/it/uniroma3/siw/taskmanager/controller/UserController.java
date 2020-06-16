@@ -110,7 +110,7 @@ public class UserController {
 		this.credentialsValidator.validate(credentials, credentialsBindingResult);
 		Credentials loggedCredentials = sessionData.getLoggedCredentials();
 		if(!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
-			this.credentialsService.updateCredentials(credentials, loggedCredentials.getUsername());
+			this.credentialsService.updateCredentials(credentials, user, loggedCredentials.getUsername());
 			return "changeSuccessful";
 		}
 		User loggedUser = loggedCredentials.getUser();
