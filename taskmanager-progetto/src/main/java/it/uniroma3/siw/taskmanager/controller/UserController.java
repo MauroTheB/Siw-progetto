@@ -111,6 +111,7 @@ public class UserController {
 		Credentials loggedCredentials = sessionData.getLoggedCredentials();
 		if(!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
 			this.credentialsService.updateCredentials(credentials, user, loggedCredentials.getUsername());
+			this.sessionData.updateWithUpdatedUsername(credentials.getUsername());
 			return "changeSuccessful";
 		}
 		User loggedUser = loggedCredentials.getUser();

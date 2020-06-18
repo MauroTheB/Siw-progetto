@@ -32,55 +32,31 @@
 							</ul>
 						</div>
 					</nav>
-					<h1>
-						<div class="alert alert-primary" role="alert">
-							<div class="mx-auto" style="width: 500px;">
-								List of all my projects
+					<div class="container h-100 d-flex justify-content-center">
+						<div class="jumbotron my-auto">
+							<h1 th:text="${task.name}" style="color: red"/>
+							<h3>This Task Can Add this Tags:</h3>
+							<div th:if="${tagList.size() > 0}">
+								<ul>
+									<h3>
+									<li th:each="tag : ${tagList}">
+										<div>
+											<a th:text="${tag.name}" class="font-weight-bold">
+												<!-- th:href="@{/tag/{tagId}(taskId=${task.id})} "-->
+											</a>
+										</div>
+										<div th:text="${tag.description}" style="">...</div>
+										<div th:text="${tag.color}"  class="font-weight-light">...</div>
+										<div>
+											<form method="POST" th:action="@{'/'+ ${task.id} +'/'+ ${tag.id}+' /addToTask'}">
+												<button type="submit" value="value">ADD TAG TO TASK</button>
+											</form>
+										</div>
+									</li>
+									</h3>
+								</ul>
 							</div>
 						</div>
-					</h1>
-					
-					<div th:if="${projectList.size() > 0}">
-						<div class="mx-auto" style="width: 550px;">
-								<table class="table">
-									<thead>
-										<tr>
-											<th>Name</th>
-											<th>Description</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="project : ${projectList}">
-											<td>
-												<a th:href="'/projects/' + ${project.id}" th:text="${project.name}">...</a>
-											</td>
-											<td th:text="${project.description}">...</td>
-											<td>
-												<form method="POST" th:action="@{/projects/{project}/delete(project=${project.name})}">
-													<button type="submit" value="value">DELETE</button>
-												</form>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-						</div>
 					</div>
-						<div class="mx-auto" style="width: 550px;">
-							<h4 th:unless="${projectList.size() > 0}">
-								<p class="font-italic" style="color: red">
-									You don't have any project yet, create one now!</p>
-							</h4>
-							<h4>
-								<a href="/projects/add">Create new project</a>
-							</h4>
-						</div>
-						<div class="mx-auto" style="width: 550px;">
-							<h4>
-								<a href="/projects/sharedProjects">Project shared with me</a>
-							</h4>
-							<h4>
-								<a href="/home">Home page</a>
-							</h4>
-						</div>
-					</body>
-				</html>
+				</body>
+			</html>

@@ -60,9 +60,14 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime lastUpdateTimestamp;
 
+    @OneToMany
+    @JoinColumn(name = "comment_id")
+	private List<Comment> comments;
+    
     public User() {
         this.ownedProjects = new ArrayList<>();
         this.visibleProjects = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public User(String firstName, String lastName) {
@@ -148,9 +153,19 @@ public class User {
         this.lastUpdateTimestamp = lastUpdateTimestamp;
     }
 
+    
+    
     // EQUALS AND HASHCODE
 
-    @Override
+    public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;

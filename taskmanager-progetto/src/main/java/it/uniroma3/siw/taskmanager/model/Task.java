@@ -1,14 +1,19 @@
 package it.uniroma3.siw.taskmanager.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
@@ -18,31 +23,42 @@ public class Task {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@Column(nullable = false, length = 100)
 	private String name;
-	
+
 	@Column
 	private String description;
 
 	@Column(nullable = false)
 	private boolean completed;
-	
+
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime creationTimestamp;
 
 	@Column(nullable = false)	
 	private LocalDateTime lastUpdateTimestamp;
-	
-	public Task() {}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "task_id")
+	private List<Comment> comments;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Tag> tags;
+
+	//CONSTRUCTOR
+	public Task() {
+		this.comments = new ArrayList<>();
+		this.tags = new ArrayList<>();
+	}
 
 	public Task(String name, String description, boolean completed) {
-		super();
+		this();
 		this.name = name;
 		this.description = description;
 		this.completed = completed;
 	}
-	
+
 	@PrePersist
 	protected void onPersist() {
 		this.creationTimestamp = LocalDateTime.now();
@@ -53,9 +69,10 @@ public class Task {
 	protected void onUpdate() {
 		this.lastUpdateTimestamp = LocalDateTime.now();
 	}
-	
-	@ManyToMany
-	private List<Tag> tags;
+
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
+	}
 
 	public Long getId() {
 		return id;
@@ -105,6 +122,26 @@ public class Task {
 		this.lastUpdateTimestamp = lastUpdateTimestamp;
 	}
 
+	public void addTags(Tag tag) {
+		this.tags.add(tag);
+	}
+	
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -144,6 +181,6 @@ public class Task {
 			return false;
 		return true;
 	}
-	
-	
+
+
 }

@@ -43,7 +43,7 @@ public class CredentialsService {
 			result.add(cred);
 		return result;
 	}
-	
+
 	public Credentials findByUsername(String username) {
 		return this.credentialsRepository.findByUsername(username).get();
 	}
@@ -52,15 +52,16 @@ public class CredentialsService {
 		this.credentialsRepository.deleteCredentialsByUsername(username);
 	}
 
-	
+
+
 	@Transactional
 	public void updateCredentials(Credentials updatedCredentials, User updatedUser, String originalUsername) {
-	   Credentials original = this.findByUsername(originalUsername);
-	   original.setUsername(updatedCredentials.getUsername());
-	   original.setPassword(updatedCredentials.getPassword());
-	   original.setPassword(this.passwordEncoder.encode(original.getPassword()));
-	   original.getUser().setFirstName(updatedUser.getFirstName());
-	   original.getUser().setLastName(updatedUser.getLastName());
-	   this.saveCredentials(original);
+		Credentials original = this.findByUsername(originalUsername);
+		original.setUsername(updatedCredentials.getUsername());
+		original.setPassword(updatedCredentials.getPassword());
+		original.getUser().setFirstName(updatedUser.getFirstName());
+		original.getUser().setLastName(updatedUser.getLastName());
+		this.saveCredentials(original);
 	}
+
 }

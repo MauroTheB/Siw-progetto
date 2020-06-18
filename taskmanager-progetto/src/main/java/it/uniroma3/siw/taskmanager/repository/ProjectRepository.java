@@ -13,5 +13,6 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 
 	public List<Project> findByMembers(User member);
 	public List<Project> findByOwner(User owner);
+	public void deleteByName(String name);
 
 }

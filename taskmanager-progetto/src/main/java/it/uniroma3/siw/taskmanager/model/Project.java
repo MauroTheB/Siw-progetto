@@ -35,14 +35,15 @@ public class Project {
 	@ManyToOne(fetch = FetchType.EAGER) //anche se e' gia' eager per default
 	private User owner;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<User> members;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "project_id")
 	private List<Task> tasks;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "project_id")
 	private List<Tag> tags;
 	
 	public Project() {
@@ -102,8 +103,40 @@ public class Project {
 		this.tasks = tasks;
 	}
 	
+	public void addTag(Tag tag) {
+		this.tags.add(tag);
+	}
+	
+	
+	
+	public LocalDateTime getStartTimestamp() {
+		return startTimestamp;
+	}
+
+	public void setStartTimestamp(LocalDateTime startTimestamp) {
+		this.startTimestamp = startTimestamp;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void addTask(Task task) {
+		this.tasks.add(task);
+	}
+	
 	public void addMember(User member) {
-		this.members.add(member);
+		if(!this.members.contains(member)) {
+			this.members.add(member);
+		}
 	}
 
 	@Override
@@ -113,7 +146,7 @@ public class Project {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

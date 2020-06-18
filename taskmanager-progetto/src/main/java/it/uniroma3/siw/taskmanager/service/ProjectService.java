@@ -20,9 +20,9 @@ public class ProjectService {
 	private ProjectRepository projectRepository;
 	
 	@Transactional
-	public Project getProject(Long id) {
-		Optional<Project> result = this.projectRepository.findById(id);
-		return result.orElse(null);
+	public Project getProjectById(Long projectId) {
+	Optional <Project> project = this.projectRepository.findById(projectId);
+		return project.orElse(null);
 	}
 	
 	@Transactional
@@ -48,5 +48,10 @@ public class ProjectService {
 
 	public List<Project> retrieveVisibleProjectsFor(User loggedUser) {
 		return this.projectRepository.findByMembers(loggedUser);
+	}
+	
+	@Transactional
+	public void deleteProjectByName(String name) {
+		this.projectRepository.deleteByName(name);
 	}
 }

@@ -32,31 +32,31 @@
 							</ul>
 						</div>
 					</nav>
-					<div class="alert alert-info" role="alert">
-						<div class="mx-auto" style="width: 550px;">
-							<h1>My Visible Projects</h1>
-						</div>
+					<div class="alert alert-success" role="alert">
+						<h1><p class="font-weight-bold">Choose  the User to share the project with!</p></h1>
 					</div>
-					<div th:if="${projectList.size() > 0}">
-						<table class="table">
+					<div>
+						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th><h4>Name</h4></th>
-									<th><h4>Description</h4></th>
+									<th><h3>First Name</h3></th>
+									<th><h3>Last Name</h3></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="project : ${projectList}">
-									<td>
-										<h4><a th:href="'/projects/' + ${project.id}" th:text="${project.name}">...</a></h4>
-									</td>
-									<td th:text="${project.description}">...</td>
-								</tbody>
-							</table>
-						</div>
-						<h4 th:unless="${projectList.size() > 0}">You don't have any visible project</h4>
-						<h4>
-							<a href="/home">Home page</a>
-						</h4>
-					</body>
-				</html>
+								<tr th:each="user : ${allUsers}">
+									<h2 th:unless="${user.id == loggedUser.id}">
+										<td th:text="${user.firstName}"></td>
+										<td th:text="${user.lastName}"/>
+										<td>
+											<form method="POST" th:action="@{'/allusers/' + ${projectId} + '/' + ${user.id}}">
+												<h5><button type="submit" value="value">SHARE</button></h5>
+											</form>
+										</td>
+									</h2>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</body>
+			</html>
