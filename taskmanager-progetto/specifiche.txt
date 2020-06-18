@@ -1,0 +1,31 @@
+Casi d'uso: User
+• Signup
+• Autenticazione
+• Visualizzare il mio profilo
+• Aggiornare il mio profilo
+
+Casi d'uso: Project
+• Creare un nuovo progetto
+• Visualizzare i miei progetti
+• Visualizzare i progetti condivisi con me
+• Aggiornare i dati di un mio progetto
+• Cancellare un mio progetto
+• Condividere un mio progetto con un altro utente
+• Aggiungere un tag ad un mio progetto (estensione)
+
+Casi d'uso: Task
+•Aggiungere un nuovo Task a un mio progetto
+•Aggiornare un Task di un mio progetto
+•Cancellare un Task da un mio progetto
+•Assegnare un Task di un mio progetto ad un utente che ha visibilità sul mio progetto
+•Aggiungere un Tag ad un task di un mio progetto (estensione)
+•Aggiungere un Commento ad un Task di un progetto su cui ho visibilità 
+(estensione)
+
+Casi d'uso: Tag(estensione)
+•Modificare un Tag
+•Cancellare un Tag
+
+Estensioni ulteriori:
+•Grafica con Bootsrap
+•Login con Oauth
